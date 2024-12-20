@@ -1,0 +1,102 @@
+# TEXT-BASED-LOGIN-SYSTEM
+#EXPECTED OUTPUT:--- Welcome to the Text-based Login System ---
+1. Register
+2. Login
+3. Exit
+Choose an option (1/2/3): 1
+
+--- Register ---
+Enter a new username: user123
+Enter a password: password123
+Registration successful! You can now log in.
+
+--- Welcome to the Text-based Login System ---
+1. Register
+2. Login
+3. Exit
+Choose an option (1/2/3): 2
+
+--- Login ---
+Enter your username: user123
+Enter your password: password123
+Login successful! Welcome.
+#PROGRAM
+import os
+
+# File where user credentials are stored
+USER_DATA_FILE = "users.txt"
+
+def register_user():
+    """Register a new user by saving username and password."""
+    print("\n--- Register ---")
+    username = input("Enter a new username: ")
+    
+    # Ensure the username is not already taken
+    if check_username_exists(username):
+        print("Username already exists! Please choose a different one.")
+        return
+    
+    password = input("Enter a password: ")
+    
+    # Save user credentials to the file
+    with open(USER_DATA_FILE, "a") as file:
+        file.write(f"{username}:{password}\n")
+    
+    print("Registration successful! You can now log in.")
+
+def check_username_exists(username):
+    """Check if the username already exists in the user data file."""
+    if os.path.exists(USER_DATA_FILE):
+        with open(USER_DATA_FILE, "r") as file:
+            users = file.readlines()
+            for user in users:
+                stored_username = user.split(":")[0]
+                if stored_username == username:
+                    return True
+    return False
+
+def login_user():
+    """Authenticate an existing user."""
+    print("\n--- Login ---")
+    username = input("Enter your username: ")
+    password = input("Enter your password: ")
+    
+    # Check if username and password match
+    if authenticate(username, password):
+        print("Login successful! Welcome.")
+    else:
+        print("Invalid username or password. Please try again.")
+
+def authenticate(username, password):
+    """Check if the username and password match the data stored in the file."""
+    if os.path.exists(USER_DATA_FILE):
+        with open(USER_DATA_FILE, "r") as file:
+            users = file.readlines()
+            for user in users:
+                stored_username, stored_password = user.strip().split(":")
+                if stored_username == username and stored_password == password:
+                    return True
+    return False
+
+def main():
+    """Main function to handle user input."""
+    while True:
+        print("\n--- Welcome to the Text-based Login System ---")
+        print("1. Register")
+        print("2. Login")
+        print("3. Exit")
+        
+        choice = input("Choose an option (1/2/3): ")
+        
+        if choice == "1":
+            register_user()
+        elif choice == "2":
+            login_user()
+        elif choice == "3":
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
